@@ -1,35 +1,34 @@
 # Build a Production-Ready RKE2 HA Cluster on AWS
 
-
-<img width="364" alt="image" src="https://docs.rke2.io/img/logo-horizontal-rke2.svg" />
+<img width="230" alt="image" src="https://camo.githubusercontent.com/e0e6e05e3edcfa94bd0eb63a3c45a35110625bd53bef7ce2d314dcbc13837e5d/68747470733a2f2f646f63732e726b65322e696f2f696d672f6c6f676f2d686f72697a6f6e74616c2d726b65322e737667" />
 
 ## Table of Contents
 
-- [Section 1: Introduction](https://github.com/pkthom/study/blob/main/rancher5.md#section-1-introduction)
-  - [What is RKE2?](https://github.com/pkthom/study/blob/main/rancher5.md#what-is-rke2)
-- [Section 2: Creating a Cluster (Manual)](https://github.com/pkthom/study/blob/main/rancher5.md#section-2-creating-a-cluster-manual)
-  - [Create a Security Group](https://github.com/pkthom/study/blob/main/rancher5.md#create-a-security-group)
-  - [Launch EC2 Instances](https://github.com/pkthom/study/blob/main/rancher5.md#launch-ec2-instances)
-  - [Set Up Server Nodes](https://github.com/pkthom/study/blob/main/rancher5.md#set-up-server-nodes)
-  - [Set Up Agent Nodes](https://github.com/pkthom/study/blob/main/rancher5.md#set-up-agent-nodes)
-  - [Connect to the Cluster From Your PC](https://github.com/pkthom/study/blob/main/rancher5.md#connect-to-the-cluster-from-your-pc)
-- [Section 3: Creating a Cluster (Terraform)](https://github.com/pkthom/study/blob/main/rancher5.md#section-3-creating-a-cluster-terraform)
-  - [What is Terraform?](https://github.com/pkthom/study/blob/main/rancher5.md#what-is-terraform)
-  - [Create an IAM User](https://github.com/pkthom/study/blob/main/rancher5.md#create-an-iam-user)
-  - [Install AWS CLI](https://github.com/pkthom/study/blob/main/rancher5.md#install-aws-cli)
-  - [Install Terraform with tfenv](https://github.com/pkthom/study/blob/main/rancher5.md#install-terraform-with-tfenv)
-  - [Create a Cluster with Terraform](https://github.com/pkthom/study/blob/main/rancher5.md#create-a-cluster-with-terraform)
-- [Section 4: Deploy a Test Nginx Page](https://github.com/pkthom/study/blob/main/rancher5.md#deploy-a-test-nginx-page)
-  - [How To Deploy](https://github.com/pkthom/study/blob/main/rancher5.md#how-to-deploy)
-  - [Install Amazon Cloud Provider](https://github.com/pkthom/study/blob/main/rancher5.md#install-amazon-cloud-provider)
-  - [Install NGINX Ingress Controller](https://github.com/pkthom/study/blob/main/rancher5.md#install-nginx-ingress-controller)
-  - [Deploy a Test Nginx](https://github.com/pkthom/study/blob/main/rancher5.md#deploy-a-test-nginx)
-- [Section 5: Rancher Setup](https://github.com/pkthom/study/blob/main/rancher5.md#section-5-rancher-setup)
-  - [Install Rancher](https://github.com/pkthom/study/blob/main/rancher5.md#install-rancher)
-  - [Import your cluster into Rancher](https://github.com/pkthom/study/blob/main/rancher5.md#import-your-cluster-into-rancher)
-  - [Node maintenance in Rancher](https://github.com/pkthom/study/blob/main/rancher5.md#node-maintenance-in-rancher)
-- [Section 6: Final Notes](https://github.com/pkthom/study/blob/main/rancher5.md#section-6-final-notes)
-  - [Final Comments and Precautions](https://github.com/pkthom/study/blob/main/rancher5.md#%EF%B8%8F-final-comments-and-precautions)
+- [Section 1: Introduction](https://github.com/pkthom/guide-aws-rke2-ha#section-1-introduction)
+  - [What is RKE2?](https://github.com/pkthom/guide-aws-rke2-ha#what-is-rke2)
+- [Section 2: Creating a Cluster (Manual)](https://github.com/pkthom/guide-aws-rke2-ha#section-2-creating-a-cluster-manual)
+  - [Create a Security Group](https://github.com/pkthom/guide-aws-rke2-ha#create-a-security-group)
+  - [Launch EC2 Instances](https://github.com/pkthom/guide-aws-rke2-ha#launch-ec2-instances)
+  - [Set Up Server Nodes](https://github.com/pkthom/guide-aws-rke2-ha#set-up-server-nodes)
+  - [Set Up Agent Nodes](https://github.com/pkthom/guide-aws-rke2-ha#set-up-agent-nodes)
+  - [Connect to the Cluster From Your PC](https://github.com/pkthom/guide-aws-rke2-ha#connect-to-the-cluster-from-your-pc)
+- [Section 3: Creating a Cluster (Terraform)](https://github.com/pkthom/guide-aws-rke2-ha#section-3-creating-a-cluster-terraform)
+  - [What is Terraform?](https://github.com/pkthom/guide-aws-rke2-ha#what-is-terraform)
+  - [Create an IAM User](https://github.com/pkthom/guide-aws-rke2-ha#create-an-iam-user)
+  - [Install AWS CLI](https://github.com/pkthom/guide-aws-rke2-ha#install-aws-cli)
+  - [Install Terraform with tfenv](https://github.com/pkthom/guide-aws-rke2-ha#install-terraform-with-tfenv)
+  - [Create a Cluster with Terraform](https://github.com/pkthom/guide-aws-rke2-ha#create-a-cluster-with-terraform)
+- [Section 4: Deploy a Test Nginx Page](https://github.com/pkthom/guide-aws-rke2-ha#deploy-a-test-nginx-page)
+  - [How To Deploy](https://github.com/pkthom/guide-aws-rke2-ha#how-to-deploy)
+  - [Install Amazon Cloud Provider](https://github.com/pkthom/guide-aws-rke2-ha#install-amazon-cloud-provider)
+  - [Install NGINX Ingress Controller](https://github.com/pkthom/guide-aws-rke2-ha#install-nginx-ingress-controller)
+  - [Deploy a Test Nginx](https://github.com/pkthom/guide-aws-rke2-ha#deploy-a-test-nginx)
+- [Section 5: Rancher Setup](https://github.com/pkthom/guide-aws-rke2-ha#section-5-rancher-setup)
+  - [Install Rancher](https://github.com/pkthom/guide-aws-rke2-ha#install-rancher)
+  - [Import your cluster into Rancher](https://github.com/pkthom/guide-aws-rke2-ha#import-your-cluster-into-rancher)
+  - [Node maintenance in Rancher](https://github.com/pkthom/guide-aws-rke2-ha#node-maintenance-in-rancher)
+- [Section 6: Final Notes](https://github.com/pkthom/guide-aws-rke2-ha#section-6-final-notes)
+  - [Final Comments and Precautions](https://github.com/pkthom/guide-aws-rke2-ha#%EF%B8%8F-final-comments-and-precautions)
 
 # Section 1: Introduction
 
