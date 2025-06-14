@@ -343,7 +343,8 @@ helm repo update
 
 helm install ingress-nginx ingress-nginx/ingress-nginx \
   -n ingress-nginx --create-namespace \
-  --set controller.service.type=LoadBalancer
+  --set controller.service.type=LoadBalancer \
+  --set controller.progressDeadlineSeconds=60
 ```
 Check the new LoadBalancer service with external IP:
 ```
