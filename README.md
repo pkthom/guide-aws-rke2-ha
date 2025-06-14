@@ -350,7 +350,24 @@ Check the new LoadBalancer service with external IP:
 ```
 kubectl get svc -n ingress-nginx
 ```
-You should also see the ELB in the AWS Console.
+You should also see the `ELB` and `a new security group` for it in the AWS Console.
+
+Add new rules to the security group to allow HTTP and HTTPS traffic from the ELB.
+
+For example, this means the ELB will access your cluster on ports 30802 and 30884.
+```
+pkthom@MacBook-Pro ~ % kubectl get svc -n ingress-nginx
+NAME                                 TYPE           CLUSTER-IP      EXTERNAL-IP                            PORT(S)                      AGE
+ingress-nginx-controller             LoadBalancer   10.43.17.212    abc.ap-southeast-1.elb.amazonaws.com   80:30802/TCP,443:30884/TCP   65m
+```
+![image](https://github.com/user-attachments/assets/19184dd3-00d2-47eb-ba5a-7e69cdbe58dd)
+
+So add 2 rules to the security group
+- Accept `30802` from the newly created ELB security group
+- Accept `30884` from the newly created ELB security group
+
+
+
 
 ELBs are highly available, spanning multiple Availability Zones.
 
