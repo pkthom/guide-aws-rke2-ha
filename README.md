@@ -32,173 +32,23 @@
 
 # Section 1: Introduction
 
-### What is RKE2?
+### Course Overview 
 
-https://docs.rke2.io/
+# Section 2: Creating a Cluster 
 
-https://github.com/rancher/rancher
+### Create a Key Pair and Security Group
 
-https://github.com/rancher/rke2
+Create a key pair `mycluster`
 
-https://ranchergovernment.com/products/rke2
-
-# Section 2: Creating a Cluster (Manual)
-
-### Create a Security Group
+Set your private key permissions to 600:
+```
+chmod 600 Downloads/mycluster.pem
+```
 
 Create a security group with these inbound rules:
 
 - Accept `All traffic` from this security group itselt
 - Accept `All traffic` from your home IP address
-
-
-### Launch EC2 Instances
-
-Create 6 EC2 instances with these settings:
-
-- OS: Ubuntu24.04
-- Instance Type: t3.meduim
-- Security Group: the one you just created above
-- Volumes : 30 GiB
-
-After creating the EC2 instances, name them:\
-`server1`, `server2`, `server3`, `agent1`, `agent2`, `agent3`
-
-
-### Set Up Server Nodes
-
-Follow the official RKE2 guide: \
-[https://docs.rke2.io/install/quickstart#server-node-installation](https://docs.rke2.io/install/quickstart#server-node-installation)
-
-Set your private key permissions to 600:
-```
-chmod 600 mycluster.pem
-```
-SSH into `server1`:
-```
-ssh ubuntu@<SERVER1_PUBLIC_IP> -i Download/mycluster.pem
-```
-
-Install RKE2:
-```
-curl -sfL https://get.rke2.io | sh -
-```
-
-Create the config directory and file:
-```
-mkdir -p /etc/rancher/rke2/
-vim /etc/rancher/rke2/config.yaml
-```
-Add this to config.yaml:
-```
-disable:
-  - rke2-ingress-nginx
-cloud-provider-name: aws
-tls-san:
-  - <SERVER1_PRIVATE_IP>
-  - <SERVER1_PUBLIC_IP>
-```
-
-Enable and start the `rke2-server.service`:
-```
-systemctl enable rke2-server.service
-systemctl start rke2-server.service
-```
-
-Repeat the above steps for `server2` and `server3`, but change config.yaml like this:
-```
-disable:
-  - rke2-ingress-nginx
-cloud-provider-name: aws
-token: <SERVER1_CLUSTER_TOKEN>
-server: https://<SERVER1_PRIVATE_IP>:9345
-```
-
-You can get `<SERVER1_CLUSTER_TOKEN>` on `server1`:
-```
-cat /var/lib/rancher/rke2/server/node-token
-```
-
-When all the `rke2-server.service` are running, check the cluster status:
-```
-/var/lib/rancher/rke2/bin/kubectl get nodes \
-  --kubeconfig /etc/rancher/rke2/rke2.yaml
-```
-
-If all nodes are *Ready*, your servers are set up correctly.
-
-### Set Up Agent Nodes
-
-Follow the official RKE2 guide: \
-[https://docs.rke2.io/install/quickstart#linux-agent-worker-node-installation](https://docs.rke2.io/install/quickstart#linux-agent-worker-node-installation)
-
-SSH into each agent node:
-```
-ssh ubuntu@<AGENT_PUBLIC_IP> -i Download/mycluster.pem
-sudo su -
-```
-Install RKE2 agent:
-```
-curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE="agent" sh -
-```
-Create the config directory and file:
-```
-mkdir -p /etc/rancher/rke2/
-vim /etc/rancher/rke2/config.yaml
-```
-Add this to `config.yaml` (change `node-name` accordingly):
-```
-token: <SERVER1_CLUSTER_TOKEN>
-server: https://<SERVER1_PRIVATE_IP>:9345
-cloud-provider-name: aws
-```
-Enable and start the `rke2-agent.service`:
-```
-systemctl enable rke2-agent.service
-systemctl start rke2-agent.service
-```
-When all the `rke2-agent.service` is running, check cluster status again:
-```
-/var/lib/rancher/rke2/bin/kubectl get nodes \
-  --kubeconfig /etc/rancher/rke2/rke2.yaml
-```
-You should see all 6 nodes in *Ready* status.
-
-### Connect to the Cluster From Your PC
-
-Install `kubectl` by following the official guide: \
-[https://kubernetes.io/docs/tasks/tools](https://kubernetes.io/docs/tasks/tools)
-
-After installing, create a Kubernetes config directory:
-```
-mkdir -p ~/.kube
-cd ~/.kube
-```
-Run this on `server1`:
-```
-cat /etc/rancher/rke2/rke2.yaml
-```
-Copy the output and paste it into your local `~/.kube/config`. 
-
-Replace `127.0.0.1` in the `server:` line with the public IP of `server1`.
-
-Set the file permission:
-```
-chmod 600 config
-```
-Test the connection:
-```
-kubectl get nodes
-```
-You should see all your nodes listed as *Ready*.
-
-Your RKE2 cluster is now ready to use.
-
-# Section 3: Creating a Cluster (Terraform)
-
-### What is Terraform?
-
-https://developer.hashicorp.com/terraform
 
 ### Create an IAM User
 
@@ -210,10 +60,13 @@ Your account could be misused by others.
 
 ### Install AWS CLI
 
-Launch a new EC2 instance.\
-(Use the same settings as in [Launch EC2 instances](https://github.com/nojsvt/study/blob/main/rancher4.md#launch-ec2-instances))
+Launch a new EC2 instance.
+- Amazon Machine Image (AMI): Ubuntu 24.04
+- Instance type: t3.medium
+- Key pair name: The one you created
+- Firewall (security groups): The one you created
 
-SSH into the instance and install AWS CLI by following the official guide: \
+SSH into the EC2 instance and install AWS CLI by following the official guide: \
 [https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html#getting-started-install-instructions](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html#getting-started-install-instructions)
 ```
 sudo apt update && sudo apt install -y unzip
@@ -245,10 +98,10 @@ List available Terraform versions:
 ```
 tfenv list-remote
 ```
-Install the latest stable version (for example, 1.12.1):
+Install the latest stable version (for example, 1.12.2):
 ```
-tfenv install 1.12.1
-tfenv use 1.12.1
+tfenv install 1.12.2
+tfenv use 1.12.2
 ```
 Verify Terraform version:
 ```
@@ -260,61 +113,52 @@ terraform version
 Follow the guide here:\
 [https://github.com/pkthom/terraform-aws-rke2-ha](https://github.com/pkthom/terraform-aws-rke2-ha)
 
-# Deploy a Test Nginx Page
+### Connect to the Cluster From Your PC
 
-### How To Deploy 
+Install `kubectl` to your local PC by following the official guide: \
+[https://kubernetes.io/docs/tasks/tools](https://kubernetes.io/docs/tasks/tools)
 
-https://kubernetes.io/docs/concepts/services-networking/ingress/#what-is-ingress
+After installing, create a Kubernetes config directory:
+```
+mkdir -p ~/.kube
+cd ~/.kube
+```
+Run this on `server1`:
+```
+cat /etc/rancher/rke2/rke2.yaml
+```
+Copy the output and paste it into your local `~/.kube/config`. 
+
+Replace `127.0.0.1` in the `server:` line with the public IP of `server1`.
+
+Set the file permission:
+```
+chmod 600 .kube/config
+```
+Test the connection:
+```
+kubectl get nodes
+```
+You should see all your nodes listed as *Ready*.
+
+Your RKE2 cluster is now ready to use.
+
+# Section 3: Deploy NGINX Ingress Controller
 
 ### Install Amazon Cloud Provider
+
+Install Helm by the following installation guide:\
+https://helm.sh/docs/intro/install/
 
 When deploying NGINX Ingress Controller with LoadBalancer service on AWS, an [ELB](https://aws.amazon.com/elasticloadbalancing/) is automatically created.\
 To enable this, install AWS Cloud Provider.
 
-
 Follow the official guide: \
 [https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/set-up-cloud-providers/amazon](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/set-up-cloud-providers/amazon)
 
-Create IAM Policies for server nodes:
+In the official guide, [1. Create an IAM Role and attach to the instances](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/set-up-cloud-providers/amazon#1-create-an-iam-role-and-attach-to-the-instances) and [2. Configure the ClusterID](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/set-up-cloud-providers/amazon#2-configure-the-clusterid) are already done by Terraform.
 
-1. Go to `IAM` -> `Policies` -> `Create Policy`
-2. Select the `JSON` tab
-3. Paste the Control Plane policy from https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/set-up-cloud-providers/amazon#1-create-an-iam-role-and-attach-to-the-instances
-4. Add `ec2:DescribeAvailabilityZones",` 
-5. Click `Next` -> Name it `acl-server-policy` -> Click `Create policy`
-
-Create IAM Policies for for agent nodes:
-
-1. Go to `IAM` -> `Policies` -> `Create Policy`
-2. Select the `JSON` tab
-3. Paste the Worker Node policy from https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/set-up-cloud-providers/amazon#1-create-an-iam-role-and-attach-to-the-instances
-4. Add `ec2:DescribeAvailabilityZones` 
-5. Click `Next` -> Name it `acl-agent-policy` -> Click `Create policy`
-
-Create an IAM Role for server nodes:
-
-1. Go to `IAM` > `Roles` > `Create role`
-2. Select `AWS service` and `EC2` -> `Next`
-3. Attach `acl-server-policy` -> `Next`
-4. Name it `acl-server-role` -> `Create role`
-
-Create an IAM Role for agent nodes:
-
-1. Go to `IAM` > `Roles` > `Create role`
-2. Select `AWS service` and `EC2` -> `Next`
-3. Attach `acl-agent-policy` -> `Next`
-4. Name it `acl-agent-role` -> `Create role`
-
-Attach the IAM Roles to the EC2 instances
-
-- Attach `acl-server-role` to all 3 server nodes.
-- Attach `acl-agent-role` to all 3 agent nodes.
-
-Tag Nodes and Subnets
-
-Add the following tag to all 6 nodes and your subnet:
-- Key: `kubernetes.io/cluster/mycluster`
-- Value: `owned`
+Start from [Helm Chart Installation from CLI](https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup/set-up-cloud-providers/amazon#helm-chart-installation-from-cli)
 
 Add the Helm repository for Amazon Cloud Provider:
 ```
@@ -366,9 +210,6 @@ So add 2 rules to the security group
 - Accept `30802` from the newly created ELB security group
 - Accept `30884` from the newly created ELB security group
 
-
-
-
 ELBs are highly available, spanning multiple Availability Zones.
 
 Check that the EXTERNAL-IP is public:
@@ -385,14 +226,14 @@ It should show an IngressClass named `nginx`.
 
 To use this Ingress Controller, specify `className: "nginx"` in your Ingress resource.
 
-### Deploy a Test Nginx
+# Section 4: Deploy a Test Nginx
 
 Create a namespace and a Helm chart:
 ```
 kubectl create namespace test
-helm create my-nginx 
+helm create test-nginx 
 ```
-Enable Ingress in `my-nginx/values.yaml`:
+Enable Ingress in `test-nginx/values.yaml`:
 ```
 ingress:
   enabled: true
@@ -401,13 +242,14 @@ ingress:
 
 Install the Helm chart:
 ```
-helm install my-nginx ./my-nginx -n test
+helm install test-nginx ./test-nginx -n test
 ```
 
 Verify the deployment:
 ```
 kubectl get pods -n test
 ```
+Verify the ingress:
 ```
 kubectl get ingress -n test
 ```
@@ -418,7 +260,7 @@ Add this to your local `/etc/hosts`
 <EXTERNAL-IP>　chart-example.local
 ```
 Now open your browser and visit:\
-http://chart-example.local/
+[http://chart-example.local/](http://chart-example.local/)
 
 You should see the NGINX welcome page.
 
@@ -472,6 +314,12 @@ Expected output:
 ```
 deployment "rancher" successfully rolled out
 ```
+
+Verify the ingress:
+```
+kubectl get ingress -n cattle-system
+```
+
 Verify the TLS certificate has been created:
 ```
 kubectl get certificates -A
@@ -492,13 +340,14 @@ Access the Rancher UI:
 
 Edit CoreDNS configmap:
 ```
-kubectl -n kube-system edit configmap rke2-coredns-rke2-coredns
+kubectl -n kube-system get configmap rke2-coredns-rke2-coredns -o yaml > coredns-cm.yaml
+vi coredns-cm.yaml
+kubectl apply -f coredns-cm.yaml
 ```
 Add this inside the `.:53 { ... }` block:
 ```
 hosts {                                    
   <EXTERNAL-IP> rancher.my.org
-  fallthrough
 }
 ```
 Restart CoreDNS:
@@ -523,7 +372,7 @@ Expected response: `pong`
 Import the Cluster into Rancher
 
 1. Open Rancher in your browser:\
-https://rancher.my.org/dashboard/home
+[https://rancher.my.org/dashboard/home](https://rancher.my.org/dashboard/home)
 
 2. Click `Import Existing` -> `Generic`
 
@@ -533,63 +382,6 @@ https://rancher.my.org/dashboard/home
 
 After a short time, your cluster should appear in Rancher in the Active state.
 
-### Node maintenance in Rancher
-
-Run a looped curl request to `my-nginx`:
-```
-watch -n 0.5 curl -I http://chart-example.local
-```
-Check Where `my-nginx` pod is running:
-```
-kubectl get pods -n test -o wide
-```
-Note which node it's on.
-
-Drain the Node from Rancher.
-
-In the Rancher UI:
-
-1. Go to `Home` -> your cluster -> `Nodes` 
-
-2. Select the node with the `my-nginx` pod
-3. Click `Cordon`
-
-4. Click `Drain`
-
-While the pod is rescheduled, you will see this in the curl output:
-```
-HTTP/1.1 503 Service Temporarily Unavailable
-```
-This indicates a short downtime occurred.
-
-We should add redundancy to prevent downtime
-
-Edit your Helm chart:
-```
-vi my-nginx/values.yaml
-```
-Change `replicaCount` from `1` to `2`.
-
-Apply the change:
-```
-helm upgrade my-nginx ./my-nginx -n test
-```
-Verify pod distribution:
-```
-kubectl get pods -n test -o wide
-```
-You should see 2 pods on 2 different nodes.
-
-Test again:
-```
-watch -n 0.5 curl -I http://chart-example.local
-```
-```
-kubectl get pods -n test -o wide
-```
-Cordon and Drain one node with a pod.
-
-You should not see any downtime in the curl output.
 
 # Section 6: Final Notes
 
