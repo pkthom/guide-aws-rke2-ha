@@ -7,8 +7,7 @@
 - [Section 1: Introduction](https://github.com/pkthom/guide-aws-rke2-ha#section-1-introduction)
   - [Course Overview](https://github.com/pkthom/guide-aws-rke2-ha/blob/main/README.md#course-overview)
 - [Section 2: Creating a Cluster](https://github.com/pkthom/guide-aws-rke2-ha/blob/main/README.md#section-2-creating-a-cluster)
-  - [Create a Key Pair and Security Group](https://github.com/pkthom/guide-aws-rke2-ha/blob/main/README.md#create-a-key-pair-and-security-group)
-  - [Create an IAM User](https://github.com/pkthom/guide-aws-rke2-ha/blob/main/README.md#create-an-iam-user)
+  - [Prepare Terraform Resources](https://github.com/pkthom/guide-aws-rke2-ha/blob/main/README.md#prepare-terraform-resources)
   - [Install AWS CLI](https://github.com/pkthom/guide-aws-rke2-ha#install-aws-cli)
   - [Install Terraform with tfenv](https://github.com/pkthom/guide-aws-rke2-ha#install-terraform-with-tfenv)
   - [Create a Cluster with Terraform](https://github.com/pkthom/guide-aws-rke2-ha#create-a-cluster-with-terraform)
@@ -28,23 +27,27 @@
 
 ### Course Overview 
 
+https://kubernetes.io/docs/concepts/services-networking/ingress/#what-is-ingress
+
 # Section 2: Creating a Cluster 
 
-### Create a Key Pair and Security Group
+### Prepare Terraform Resources
 
-Create a key pair `mycluster`
+1. Create a key pair `mycluster`
 
 Set your private key permissions to 600:
 ```
 chmod 600 Downloads/mycluster.pem
 ```
 
-Create a security group with these inbound rules:
+2. Allocate an Elastic IP
+
+3. Create a security group with these inbound rules:
 
 - Accept `All traffic` from this security group itselt
 - Accept `All traffic` from your home IP address
 
-### Create an IAM User
+4. Create an IAM User
 
 Create an IAM user with `AdministratorAccess`.\
 Save the `Access key` and `Secret access key` — you’ll need them later.
