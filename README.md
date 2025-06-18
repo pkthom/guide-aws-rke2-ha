@@ -5,29 +5,23 @@
 ## Table of Contents
 
 - [Section 1: Introduction](https://github.com/pkthom/guide-aws-rke2-ha#section-1-introduction)
-  - [What is RKE2?](https://github.com/pkthom/guide-aws-rke2-ha#what-is-rke2)
-- [Section 2: Creating a Cluster (Manual)](https://github.com/pkthom/guide-aws-rke2-ha#section-2-creating-a-cluster-manual)
-  - [Create a Security Group](https://github.com/pkthom/guide-aws-rke2-ha#create-a-security-group)
-  - [Launch EC2 Instances](https://github.com/pkthom/guide-aws-rke2-ha#launch-ec2-instances)
-  - [Set Up Server Nodes](https://github.com/pkthom/guide-aws-rke2-ha#set-up-server-nodes)
-  - [Set Up Agent Nodes](https://github.com/pkthom/guide-aws-rke2-ha#set-up-agent-nodes)
-  - [Connect to the Cluster From Your PC](https://github.com/pkthom/guide-aws-rke2-ha#connect-to-the-cluster-from-your-pc)
-- [Section 3: Creating a Cluster (Terraform)](https://github.com/pkthom/guide-aws-rke2-ha#section-3-creating-a-cluster-terraform)
-  - [What is Terraform?](https://github.com/pkthom/guide-aws-rke2-ha#what-is-terraform)
-  - [Create an IAM User](https://github.com/pkthom/guide-aws-rke2-ha#create-an-iam-user)
+  - [Course Overview](https://github.com/pkthom/guide-aws-rke2-ha/blob/main/README.md#course-overview)
+- [Section 2: Creating a Cluster](https://github.com/pkthom/guide-aws-rke2-ha/blob/main/README.md#section-2-creating-a-cluster)
+  - [Create a Key Pair and Security Group](https://github.com/pkthom/guide-aws-rke2-ha/blob/main/README.md#create-a-key-pair-and-security-group)
+  - [Create an IAM User](https://github.com/pkthom/guide-aws-rke2-ha/blob/main/README.md#create-an-iam-user)
   - [Install AWS CLI](https://github.com/pkthom/guide-aws-rke2-ha#install-aws-cli)
   - [Install Terraform with tfenv](https://github.com/pkthom/guide-aws-rke2-ha#install-terraform-with-tfenv)
   - [Create a Cluster with Terraform](https://github.com/pkthom/guide-aws-rke2-ha#create-a-cluster-with-terraform)
-- [Section 4: Deploy a Test Nginx Page](https://github.com/pkthom/guide-aws-rke2-ha#deploy-a-test-nginx-page)
-  - [How To Deploy](https://github.com/pkthom/guide-aws-rke2-ha#how-to-deploy)
+  - [Connect to the Cluster From Your PC](https://github.com/pkthom/guide-aws-rke2-ha/blob/main/README.md#connect-to-the-cluster-from-your-pc)
+- [Section 3: Deploy a Test Nginx](https://github.com/pkthom/guide-aws-rke2-ha/blob/main/README.md#section-3-deploy-a-test-nginx)
   - [Install Amazon Cloud Provider](https://github.com/pkthom/guide-aws-rke2-ha#install-amazon-cloud-provider)
   - [Install NGINX Ingress Controller](https://github.com/pkthom/guide-aws-rke2-ha#install-nginx-ingress-controller)
   - [Deploy a Test Nginx](https://github.com/pkthom/guide-aws-rke2-ha#deploy-a-test-nginx)
-- [Section 5: Rancher Setup](https://github.com/pkthom/guide-aws-rke2-ha#section-5-rancher-setup)
+- [Section 4: Rancher Setup](https://github.com/pkthom/guide-aws-rke2-ha#section-4-rancher-setup)
   - [Install Rancher](https://github.com/pkthom/guide-aws-rke2-ha#install-rancher)
   - [Import your cluster into Rancher](https://github.com/pkthom/guide-aws-rke2-ha#import-your-cluster-into-rancher)
   - [Node maintenance in Rancher](https://github.com/pkthom/guide-aws-rke2-ha#node-maintenance-in-rancher)
-- [Section 6: Final Notes](https://github.com/pkthom/guide-aws-rke2-ha#section-6-final-notes)
+- [Section 5: Final Notes](https://github.com/pkthom/guide-aws-rke2-ha#section-5-final-notes)
   - [Final Comments and Precautions](https://github.com/pkthom/guide-aws-rke2-ha#%EF%B8%8F-final-comments-and-precautions)
 
 # Section 1: Introduction
@@ -143,7 +137,7 @@ You should see all your nodes listed as *Ready*.
 
 Your RKE2 cluster is now ready to use.
 
-# Section 3: Deploy NGINX Ingress Controller
+# Section 3: Deploy a Test Nginx
 
 ### Install Amazon Cloud Provider
 
@@ -226,7 +220,7 @@ It should show an IngressClass named `nginx`.
 
 To use this Ingress Controller, specify `className: "nginx"` in your Ingress resource.
 
-# Section 4: Deploy a Test Nginx
+### Deploy a Test Nginx
 
 Create a namespace and a Helm chart:
 ```
@@ -265,7 +259,7 @@ Now open your browser and visit:\
 You should see the NGINX welcome page.
 
 
-# Section 5: Rancher Setup
+# Section 4: Rancher Setup
 
 ### Install Rancher
 
@@ -383,7 +377,7 @@ Import the Cluster into Rancher
 After a short time, your cluster should appear in Rancher in the Active state.
 
 
-# Section 6: Final Notes
+# Section 5: Final Notes
 
 ### ⚠️ Final Comments and Precautions
 
